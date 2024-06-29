@@ -11,6 +11,7 @@ from django.template.defaultfilters import date
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
+from django.contrib.admin.widgets import AdminSplitDateTime
 
 from schedule.models.calendars import Calendar
 from schedule.models.rules import Rule
@@ -90,8 +91,8 @@ class Event(models.Model):
     objects = EventManager()
 
     class Meta:
-        verbose_name = _("event")
-        verbose_name_plural = _("events")
+        verbose_name = _("событие")
+        verbose_name_plural = _("события")
         index_together = (("start", "end"),)
 
     def __str__(self):

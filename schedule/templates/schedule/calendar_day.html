@@ -5,20 +5,26 @@
 
 {% include "schedule/_dialogs.html" %}
 <div class="row row-centered">
-  <a class="btn btn-primary gradient" href="{% url "week_calendar" calendar.slug %}{% querystring_for_date period.start 3 %}">
-    {% trans "Week" %}
-  </a>
-  <a class="btn btn-primary gradient" href="{% url "month_calendar" calendar.slug %}{% querystring_for_date period.start 2 %}">
-    {% trans "Month" %}
-  </a>
-  <a class="btn btn-primary gradient" href="{% url "year_calendar" calendar.slug %}{% querystring_for_date period.start 1 %}">
-    {% trans "Year" %}
-  </a>
+  <div class="col-4">
+    <a class="btn btn-primary gradient" href="{% url "week_calendar" calendar.slug %}{% querystring_for_date period.start 3 %}" style="width: 100%">
+      {% trans "Week" %}
+    </a>
+  </div>
+  <div class="col-4">
+    <a class="btn btn-primary gradient" href="{% url "month_calendar" calendar.slug %}{% querystring_for_date period.start 2 %}" style="width: 100%">
+      {% trans "Month" %}
+    </a>
+  </div>
+  <div class="col-4">
+    <a class="btn btn-primary gradient" href="{% url "year_calendar" calendar.slug %}{% querystring_for_date period.start 1 %}" style="width: 100%">
+      {% trans "Year" %}
+    </a>
+  </div>
 </div>
 <div class="row row-centered">
     <h1>{{ calendar.name }}</h1>
     {% prevnext "day_calendar" calendar period "l, F d, Y" %}
-    <div class="now">
+    <div class="now mb-3">
       <a class="btn btn-primary gradient" href="{% url "day_calendar" calendar.slug %}">
         {% trans "Today" %}
       </a>

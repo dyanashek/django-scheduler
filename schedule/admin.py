@@ -1,13 +1,12 @@
+import datetime
+
 from django.contrib import admin
+from django.db.models import Q
 
 from schedule.forms import EventAdminForm
 from schedule.models import (
     Calendar,
-    CalendarRelation,
     Event,
-    EventRelation,
-    Occurrence,
-    Rule,
 )
 
 
@@ -19,36 +18,10 @@ class CalendarAdmin(admin.ModelAdmin):
     fieldsets = ((None, {"fields": [("name", "slug")]}),)
 
 
-@admin.register(CalendarRelation)
-class CalendarRelationAdmin(admin.ModelAdmin):
-    list_display = ("calendar", "content_object")
-    list_filter = ("inheritable",)
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": [
-                    "calendar",
-                    ("content_type", "object_id", "distinction"),
-                    "inheritable",
-                ]
-            },
-        ),
-    )
-
-
-@admin.register(EventRelation)
-class EventRelationAdmin(admin.ModelAdmin):
-    list_display = ("event", "content_object", "distinction")
-    fieldsets = (
-        (None, {"fields": ["event", ("content_type", "object_id", "distinction")]}),
-    )
-
-
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("title", "start", "end")
-    list_filter = ("start",)
+    list_display = ("title", "formatted_start", "formatted_end")
+    list_filter = ("start", "calendar",)
     ordering = ("-start",)
     date_hierarchy = "start"
     search_fields = ("title", "description")
@@ -67,13 +40,47 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
     form = EventAdminForm
+    actions = ('duplicate_event_5', 'duplicate_event_10',)
 
+    def _duplicate_event(self, request, queryset, count):
+        for curr_event in queryset:
+            first_event = curr_event
+            for _ in range(count):
+                event = Event(
+                    title=first_event.title,
+                    description=first_event.description,
+                    start=first_event.start + datetime.timedelta(days=1),
+                    end=first_event.end + datetime.timedelta(days=1),
+                    calendar=first_event.calendar,
+                    )
+                exists = Event.objects.filter(
+                    Q(title=first_event.title) &
+                    Q(description=first_event.description) &
+                    Q(start=first_event.start + datetime.timedelta(days=1)) &
+                    Q(end=first_event.end + datetime.timedelta(days=1)) &
+                    Q(calendar=first_event.calendar)
+                    )
+                if not exists:
+                    event.save()
+                first_event = event
 
-admin.site.register(Occurrence, admin.ModelAdmin)
+    def duplicate_event_5(self, request, queryset):
+        self._duplicate_event(request, queryset, 5)
+        
+    duplicate_event_5.short_description = "Создать копии (5)"
 
+    def duplicate_event_10(self, request, queryset):
+        self._duplicate_event(request, queryset, 10)
 
-@admin.register(Rule)
-class RuleAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    list_filter = ("frequency",)
-    search_fields = ("name", "description")
+    duplicate_event_10.short_description = "Создать копии (10)"
+
+    def formatted_start(self, obj):
+        return obj.start.strftime('%d %B %Y %H:%M')
+    formatted_start.admin_order_field = 'start'
+    formatted_start.short_description = 'Start Date and Time'
+
+    def formatted_end(self, obj):
+        return obj.end.strftime('%d %B %Y %H:%M')
+    formatted_end.admin_order_field = 'end'
+    formatted_end.short_description = 'End Date and Time'
+

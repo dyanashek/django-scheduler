@@ -1,6 +1,4 @@
 {% load scheduletags %}
-<div class="row row-centered">
-    {% prev_url target calendar period %}
-    &nbsp; <b>{{period_name}}</b> &nbsp;
-    {% next_url target calendar period %}
+<div class="row row-centered mb-3">
+    <span>{% prev_url target calendar period %}<b> {{period_name}} </b>{% next_url target calendar period %}</span>
 </div>

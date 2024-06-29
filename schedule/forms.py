@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.contrib.admin.widgets import AdminSplitDateTime
 
 from schedule.models import Event, Occurrence
 from schedule.widgets import ColorInput
@@ -8,7 +9,7 @@ from schedule.widgets import ColorInput
 class SpanForm(forms.ModelForm):
     start = forms.SplitDateTimeField(label=_("start"))
     end = forms.SplitDateTimeField(
-        label=_("end"), help_text=_("The end time must be later than start time.")
+        label=_("end"), help_text=_("The end time must be later than start time."),
     )
 
     def clean(self):

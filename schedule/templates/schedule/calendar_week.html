@@ -6,19 +6,23 @@
 {% include "schedule/_dialogs.html" %}
 
 <div class="row row-centered">
-  <a href="{% url "month_calendar" calendar.slug %}{% querystring_for_date period.start 2 %}">
-    {% trans "Month" %}
-  </a>
-  <a href="{% url "year_calendar" calendar.slug %}{% querystring_for_date period.start 1 %}">
-    {% trans "Year" %}
-  </a>
+  <div class="col-6">
+    <a class="btn btn-primary gradient" href="{% url "month_calendar" calendar.slug %}{% querystring_for_date period.start 2 %}" style="width: 100%">
+      {% trans "Month" %}
+    </a>
+  </div>
+  <div class="col-6">
+    <a class="btn btn-primary gradient" href="{% url "year_calendar" calendar.slug %}{% querystring_for_date period.start 1 %}" style="width: 100%">
+      {% trans "Year" %}
+    </a>
+  </div>
 </div>
 
 <div class="row row-centered">
-    <div>{{ calendar.name }}</div>
+    <h2 align="center">{{ calendar.name }}</div>
     {% prevnext "week_calendar" calendar period "\W\e\ek W, M Y" %}
-    <div class="now">
-      <a href="{% url "week_calendar" calendar.slug %}">
+    <div class="now" align="center">
+      <a class="btn btn-primary gradient" href="{% url "week_calendar" calendar.slug %}">
         {% trans "This week" %}
       </a>
     </div>

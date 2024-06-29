@@ -143,8 +143,8 @@ class Calendar(models.Model):
     objects = CalendarManager()
 
     class Meta:
-        verbose_name = _("calendar")
-        verbose_name_plural = _("calendars")
+        verbose_name = _("календарь")
+        verbose_name_plural = _("календари")
 
     def __str__(self):
         return self.name
